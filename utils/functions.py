@@ -8,6 +8,13 @@ Basic Functions to be used anywhere
 import traceback
 import sys
 import time
+
+__all__ = [
+    "printSyntax"
+    , "printTraceback"
+    , "Duration"
+    , "checkType"
+]
     
 # Syntax Printer
 def printSyntax(syntax:str, toPrint:bool = True):

@@ -10,6 +10,15 @@ import json
 import pandas 
 import abc
 
+
+__all__ = [
+    "File"
+    , "TXT"
+    , "JSON"
+    , "CSV"
+    , "Folder"
+]
+
 # Inital File Object to Base around Specific Files
 class File:
     def __init__(self, directory:str = None) -> None:

@@ -7,18 +7,17 @@ Utilities Package:
 
 
 # Package Version
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 
 # Import Modules
-from . import database
-from . import file
-from . import functions 
+from . import database, file, functions, words
 
 __all__ = [
     "database"
     ,"file"
     ,"functions"
+    , "words"
 ]
 
 
