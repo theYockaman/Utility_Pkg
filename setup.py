@@ -8,15 +8,6 @@ setup(
     , url = ''
     , description = "Utils Package is universal across building of other Python Projects"
     , packages = find_packages()
-    , install_requires=[
-        'pandas'
-        , 'os'
-        , 'json'
-        , 'abc'
-        , 'traceback'
-        , 'sys'
-        , 'time'
-    ]
     , long_description = open("README.md").read()
     , long_description_content_type = 'text/markdown'
     
