@@ -1,7 +1,15 @@
-from os.path import exists
-from os import remove
-import sqlite3 
-from pandas import DataFrame, read_sql_query
+
+# Module Documentation
+"""
+Database Module:
+    This module is used to manipulate database on an OOO level so then others who might not know SQL can work with databases easily.
+"""
+
+
+# Import Modules
+import os
+import sqlite3
+import pandas
 
 # Column Object for SQLite Database
 class Column:
@@ -147,7 +155,7 @@ class Table:
             connection.execute(f"DROP TABLE {name};")
             connection.commit()
         
-    def update(self, df:DataFrame) -> None:
+    def update(self, df:pandas.DataFrame) -> None:
         """Changes DataFrame to Database Table
 
         :param df: DataFrame to Update Database
@@ -158,14 +166,14 @@ class Table:
         df.to_sql(self._name,self._connection, if_exists='replace', index = False)
    
     @property
-    def data(self) -> DataFrame:
+    def data(self) -> pandas.DataFrame:
         """Data DataFrame in the Table Database
 
         :return: Table Data
         :rtype: DataFrame
         """
         # Dataframe stored in Database Table
-        return read_sql_query(f"SELECT * FROM {self._name}", self._connection)
+        return pandas.read_sql_query(f"SELECT * FROM {self._name}", self._connection)
 
 # Database Object for SQLite Database
 class Database:
@@ -204,7 +212,7 @@ class Database:
         if directory[-3:] != ".db": raise ValueError("Not a .db file directory")
         
         # Checks Directory Existance
-        return exists(directory)
+        return os.path.exists(directory)
     
     def create(self, directory:str = None) -> None:
         """Creates Database
@@ -235,7 +243,7 @@ class Database:
         
         # Checks to see if the Database already exists
         if Database.exist(directory):
-            remove(directory)
+            os.remove(directory)
     
     @property
     def tables(self) -> list[Table]:

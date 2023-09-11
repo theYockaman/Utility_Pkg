@@ -1,8 +1,14 @@
+
+# Module Documentation
+"""
+File Objects (OOO): Easy to manipulate 
+"""
+
 # Imported Modules
 import os
 import json
-import pandas as pd
-from abc import abstractmethod
+import pandas 
+import abc
 
 # Inital File Object to Base around Specific Files
 class File:
@@ -31,7 +37,7 @@ class File:
         if directory is None: self.directory
         return os.path.isfile(directory)
 
-    @abstractmethod
+    @abc.abstractmethod
     def create(self, directory:str = None) -> None:
         """Creates File
 
@@ -55,7 +61,7 @@ class File:
         # Deletes the File
         os.remove(directory)
               
-    @abstractmethod
+    @abc.abstractmethod
     def read(self) -> str:
         """Read File
 
@@ -67,7 +73,7 @@ class File:
             data = file.read()
         return data
 
-    @abstractmethod
+    @abc.abstractmethod
     def write(self, data:str) -> None:
         """Write Data to File
 
@@ -178,16 +184,16 @@ class CSV(File):
         if directory is None: directory = f"{os.path.dirname(os.path.abspath(__file__))}/new.csv"
         super().__init__(directory)
 
-    def read(self) -> pd.DataFrame:
+    def read(self) -> pandas.DataFrame:
         """Read Csv File
 
         :return: Conent of Csv
         :rtype: pd.DataFrame
         """
-        df = pd.read_csv(self.directory)
+        df = pandas.read_csv(self.directory)
         return df.loc[:, ~df.columns.str.contains('^Unnamed')]
 
-    def write(self, df:pd.DataFrame) -> None:
+    def write(self, df:pandas.DataFrame) -> None:
         """Write to Csv File
 
         :param df: Content to Write

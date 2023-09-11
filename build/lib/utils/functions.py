@@ -1,3 +1,10 @@
+
+# Module Documentation
+"""
+Basic Functions to be used anywhere
+"""
+
+# Import Modules
 import traceback
 import sys
 import time
