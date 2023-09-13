@@ -64,7 +64,7 @@ Task List
 - [ ] Update the website
 - [ ] Contact the media
 
-Emogjis
+Emojis
 That is so funny! :joy:
 
 Highlight
