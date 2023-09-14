@@ -6,18 +6,15 @@ Utilities Package:
 """
 
 
-# Package Version
-__version__ = "0.0.2"
-
-
 # Import Modules
-from . import database, file, functions, words
+from . import database, file, functions, words, math
 
 __all__ = [
     "database"
     ,"file"
     ,"functions"
     , "words"
+    , "math"
 ]
 
 

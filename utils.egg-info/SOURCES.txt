@@ -5,6 +5,7 @@ utils/__init__.py
 utils/database.py
 utils/file.py
 utils/functions.py
+utils/math.py
 utils/words.py
 utils.egg-info/PKG-INFO
 utils.egg-info/SOURCES.txt
