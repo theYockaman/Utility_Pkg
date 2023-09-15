@@ -7,6 +7,7 @@ File Objects (OOO): Easy to manipulate
 # Imported Modules
 import os, json, pandas, abc
 from .functions import checkType
+import pathlib
 
 __all__ = [
     "File"
@@ -17,7 +18,7 @@ __all__ = [
     , "LOCAL_DIRECTORY"
 ]
 
-LOCAL_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+LOCAL_DIRECTORY = pathlib.Path().resolve()
 
 # Inital File Object to Base around Specific Files
 class File:
