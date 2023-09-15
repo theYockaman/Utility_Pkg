@@ -17,7 +17,7 @@ __all__ = [
     , "LOCAL_DIRECTORY"
 ]
 
-LOCAL_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+LOCAL_DIRECTORY = os.path.dirname(os.path.abspath("__main__"))
 
 # Inital File Object to Base around Specific Files
 class File:
