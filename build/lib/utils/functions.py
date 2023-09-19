@@ -5,15 +5,13 @@ Basic Functions to be used various projects, but to simplify the process while w
 """
 
 # Import Modules
-import traceback
-import sys
-import time
+import traceback, sys, time
 
 __all__ = [
     "printSyntax"
     , "printTraceback"
-    , "Duration"
     , "checkType"
+    , "Duration"
 ]
     
 # Syntax Printer
@@ -28,21 +26,23 @@ def printSyntax(syntax, toPrint:bool = True) -> None:
     """
     
     # Check to Make sure toPrint Parameter is a Boolean Variable
-    if not checkType({toPrint:[bool]}):
-        raise TypeError("toPrint Parameter is not a Boolean Type")
+    if not checkType({toPrint:[bool]}): raise TypeError("toPrint Parameter is not a Boolean Type")
     
-    if toPrint is True:
-        print(syntax)
+    # Print Syntax
+    if toPrint is True: print(syntax)
         
 # Print Traceback
 def printTraceback() -> None:
-    """Prints the Traceback of Current Ran Code and Quits the Code
     """
+    Prints the Traceback of Current Ran Code and Quits the Code
+    """
+    
+    # Prints the Traceback
     print(traceback.format_exc())
     sys.exit()
 
 # Checks Variable DataType
-def checkType(variables:dict[list]) -> bool:
+def checkType(variables:dict) -> bool:
     """Check Types of Variables
 
     :param variables: {Variable:[Types]} ex. {variableOne:[str,int,float]}
@@ -53,19 +53,32 @@ def checkType(variables:dict[list]) -> bool:
     :rtype: bool
     """
     
-    if not isinstance(variables,dict): raise ValueError("Variables wrong type")
+    # Make sure Parameter is a Dictionary
+    if not isinstance(variables, dict): raise ValueError("Variables wrong type")
     
+    
+    # Iterate through each in Variables
     for key, value in variables.items():
         
-        if key is None and None not in value: return False
+        # List Variable
+        if isinstance(value,list) or isinstance(value,set) or isinstance(value,tuple):
+            if key is None and None not in value: return False
 
-        if key is None and None in value: continue
+            if key is None and None in value: continue
+            
+            if None in value: value.remove(None)
+            
+            if type(key) not in value: return False
+            
+        else:
+            
+            if key is None and value is None: continue
+            
+            if isinstance(key,value) is not True: return False
+            
+            
         
-        if not isinstance(value,list): raise ValueError("Value wrong type")
-        
-        if None in value: value.remove(None)
-        
-        if type(key) not in value: return False
+            
         
     return True
 

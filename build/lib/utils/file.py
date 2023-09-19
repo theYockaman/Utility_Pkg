@@ -5,9 +5,10 @@ File Objects (OOO): Easy to manipulate
 """
 
 # Imported Modules
-import os, json, pandas, abc
+import os, json, pandas, abc, csv
 from .functions import checkType
 import pathlib
+import shutil
 
 __all__ = [
     "File"
@@ -18,17 +19,12 @@ __all__ = [
     , "LOCAL_DIRECTORY"
 ]
 
+# Local Directory from Main Functions
 LOCAL_DIRECTORY = pathlib.Path().resolve()
 
 # Inital File Object to Base around Specific Files
 class File:
     def __init__(self, directory:str = None) -> None:
-        """File Object to easily manipulate files
-
-        :param directory: File Directory, defaults to None
-        :type directory: str, optional
-        :raises TypeError: directory is not a `str`
-        """
         
         # Directory of File
         if directory is None: directory = f"{LOCAL_DIRECTORY}/new.txt"
@@ -40,158 +36,109 @@ class File:
         self.directory = directory
         
         # Creates File if Does Not Exist
-        if not self.exists(self.directory): self.create(self.directory)
+        if not self.exists(): self._create()
     
-    def exists(self, directory:str = None) -> bool:
-        """Checks if File Exists
-
-        :param directory: File Directory, defaults to None
-        :type directory: str, optional
-        :return: `True` File Exists, `False` File Does Not Exist
-        :rtype: bool
-        """
+    def exists(self) -> bool:
+        
         # Setup Directory to the Object's Directory
-        if directory is None: self.directory
+        if self.directory is None: raise ValueError("No Directory")
         
         # Check Directory Type
-        if not checkType({directory:[str]}): raise TypeError("directory is not a `str`")
+        if not checkType({self.directory:[str]}): raise TypeError("directory is not a `str`")
         
         # Checks if file exists
-        return os.path.isfile(directory)
+        return os.path.isfile(self.directory)
 
     @abc.abstractmethod
-    def create(self, directory:str = None) -> None:
-        """Creates File
-
-        :param directory: File Directory, defaults to None
-        :type directory: str, optional
-        """
+    def _create(self) -> None:
         
         # Setup Directory to the Object's Directory
-        if directory is None: directory = self.directory
+        if self.directory is None: raise ValueError("No Directory")
         
         # Check Directory Type
-        if not checkType({directory:[str]}): raise TypeError("directory is not a `str`")
+        if not checkType({self.directory:[str]}): raise TypeError("directory is not a `str`")
         
         # Creates the File
-        with open(directory,"x"):
+        with open(self.directory,"x"):
             pass
      
-    def delete(self, directory:str = None) -> None:
-        """Deletes File
-
-        :param directory: File Directory, defaults to None
-        :type directory: str, optional
-        """
+    def delete(self) -> None:
         
         # Setup Directory to the Object's Directory
-        if directory is None: 
-            directory = self.directory
-            self.directory = None
+        if self.directory is None: raise ValueError("No Directory")
             
         # Check Directory Type
-        if not checkType({directory:[str]}): raise TypeError("directory is not a `str`")
+        if not checkType({self.directory:[str]}): raise TypeError("directory is not a `str`")
         
         # Deletes the File
-        os.remove(directory)
+        os.remove(self.directory)
+        
+        self.directory = None
               
     @abc.abstractmethod
-    def read(self, directory:str = None) -> str:
-        """Read File Data
-
-        :param directory: Directory of File, defaults to None
-        :type directory: str, optional
-        :return: File Data
-        :rtype: str
-        """
+    def read(self) -> str:
         
         # Setup Directory to the Object's Directory
-        if directory is None: directory = self.directory
+        if self.directory is None: raise ValueError("No Directory")
         
         # Check Directory Type
-        if not checkType({directory:[str]}): raise TypeError("directory is not a `str`")
+        if not checkType({self.directory:[str]}): raise TypeError("directory is not a `str`")
         
         # Reads the file
-        with open(directory) as file:
+        with open(self.directory) as file:
             data = file.read()
             
         return data
 
     @abc.abstractmethod
-    def write(self, data:str, directory:str = None) -> None:
-        """Write to Directory
-
-        :param data: Info/Data to add to the file
-        :type data: str
-        :param directory: File Directory that writes too, defaults to None
-        :type directory: str, optional
-        """
+    def write(self, data:str) -> None:
         
         # Setup Directory to the Object's Directory
-        if directory is None: directory = self.directory
+        if self.directory is None: raise ValueError("No Directory")
         
         # Check Directory Type
-        if not checkType({directory:[str], data:[str]}): raise TypeError("directory is not a `str`")
+        if not checkType({self.directory:[str], data:[str]}): raise TypeError("directory is not a `str`")
         
         # Writes to the file or input value into file
-        with open(directory) as file:
+        with open(self.directory,"w") as file:
             file.write(data)
       
-    def rename(self, name:str, directory:str = None) -> None:
-        """Rename the File
-
-        :param name: New Name of the File
-        :type name: str
-        :param directory: Directory of File want to Rename, defaults to None
-        :type directory: str, optional
-        """
+    def rename(self, name:str) -> None:
         
         # Setup Directory to the Object's Directory
-        if directory is None: directory = self.directory
+        if self.directory is None: raise ValueError("No Directory")
         
         # Check Directory Type
-        if not checkType({directory:[str],name:[str]}): raise TypeError("parameter is not a `str`")
+        if not checkType({self.directory:[str],name:[str]}): raise TypeError("parameter is not a `str`")
         
-        # Directory List
-        directoryList = directory.split("/")
+        directoryList = self.directory.split("/")
         
         # File Type
         fileType = directoryList[-1].split(".")[-1]
-        newDirectory = "/".join(directoryList) + name + fileType
+        newDirectory = "/".join(directoryList[:-1])+"/" + name + '.' +fileType
+        if newDirectory[0] == "/": newDirectory = newDirectory[1:]
         
         # Rename File
-        os.rename(directory, newDirectory)
+        os.rename(self.directory, newDirectory)
         
         # Setup Directory to the Object's Directory
-        if directory is None:  self.directory = directory
+        self.directory = newDirectory
               
-    def move(self, newDirectory:str, oldDirectory:str = None) -> None:
-        """Move the file from one Directory to another One
-
-        :param newDirectory: Final Destination Directory
-        :type newDirectory: str
-        :param oldDirectory: Starting Orginal Directory, defaults to None
-        :type oldDirectory: str, optional
-        """
+    def move(self, newDirectory:str) -> None:
         
         # Setup Directory to the Object's Directory
-        if oldDirectory is None: oldDirectory = self.directory
+        if self.directory is None: raise ValueError("No Directory")
         
         # Check Directory Type
-        if not checkType({oldDirectory:[str],newDirectory:[str]}): raise TypeError("directory is not a `str`")
+        if not checkType({self.directory:[str],newDirectory:[str]}): raise TypeError("directory is not a `str`")
         
         # Rename the Directory
-        os.rename(oldDirectory, newDirectory)
+        os.rename(self.directory, newDirectory)
         
         # Setup Directory to the Object's Directory
-        if oldDirectory is None: self.directory = newDirectory
+        self.directory = newDirectory
     
     def __str__(self)-> str:
-        """File String
-
-        :return: Directory of File
-        :rtype: str
-        """
         
         # Fill in No Directory
         if self.directory is None: return "No Directory Avaliable"
@@ -222,7 +169,7 @@ class JSON(File):
         
         super().__init__(directory)
 
-    def create(self, directory:str = None) -> None:
+    def _create(self) -> None:
         """Create JSON File
 
         :param directory: JSON File Directory, defaults to None
@@ -230,22 +177,19 @@ class JSON(File):
         :raises TypeError: Parameter Not Correct Type
         """
         
-        # Setup Directory to the Object's Directory
-        if directory is None: directory = self.directory
-        
         # Check Parameter Types
-        if not checkType({directory:[str]}):
+        if not checkType({self.directory:[str]}):
             raise TypeError("Parameter Not Correct Type")
         
         # Create a JSON File 
-        with open(directory,'x') as file:
+        with open(self.directory,'x') as file:
             file.close()
             
         # Make the JSON File Empty
-        with open(directory, "w") as file:
+        with open(self.directory, "w") as file:
             json.dump({}, file, indent = 6)
 
-    def read(self, directory:str = None) -> dict:
+    def read(self) -> dict:
         """Read in JSON File
 
         :param directory: Directory of JSON File, defaults to None
@@ -256,19 +200,19 @@ class JSON(File):
         """
         
         # Setup Directory to the Object's Directory
-        if directory is None: directory = self.directory
+        if self.directory is None: raise ValueError("No Directory")
         
         # Check Parameter Types
-        if not checkType({directory:[str]}):
+        if not checkType({self.directory:[str]}):
             raise TypeError("Parameter Not Correct Type")
         
         # Reading in the Data
-        with open(directory, "r") as file:
+        with open(self.directory, "r") as file:
             data = json.load(file)
             
         return data
 
-    def write(self, data:dict, directory:str = None) -> None:
+    def write(self, data:dict) -> None:
         """Write to JSON File
 
         :param data: New JSON File Data
@@ -279,10 +223,10 @@ class JSON(File):
         """
         
         # Setup Directory to the Object's Directory
-        if directory is None: directory = self.directory
+        if self.directory is None: raise ValueError("No Directory")
         
         # Check Parameter Types
-        if not checkType({directory:[str],data:[dict]}):
+        if not checkType({self.directory:[str]}):
             raise TypeError("Parameter Not Correct Type")
         
         # Write to JSON File
@@ -303,30 +247,24 @@ class CSV(File):
         
         super().__init__(directory)
 
-    def read(self, directory:str = None) -> pandas.DataFrame:
-        """Read in CSV File
-
-        :param directory: Directory of the CSV File, defaults to None
-        :type directory: str, optional
-        :raises TypeError: Parameter Not Correct Type
-        :return: CSV Data
-        :rtype: pandas.DataFrame
-        """
+    def read(self) -> pandas.DataFrame:
         
-        # Setup Directory to the Object's Directory
-        if directory is None: directory = self.directory
         
         # Check Parameter Types
-        if not checkType({directory:[str]}):
+        if not checkType({self.directory:[str]}):
             raise TypeError("Parameter Not Correct Type")
         
-        # Read in CSV as a Dataframe
-        df = pandas.read_csv(self.directory)
+        # Get Dataframe
+        try:
+            df = pandas.read_csv(self.directory,index_col=0)
+            
+        except pandas.errors.EmptyDataError:
+            df = pandas.DataFrame()
         
         # Return Dataframe of the CSV Data
-        return df.loc[:, ~df.columns.str.contains('^Unnamed')]
+        return df
 
-    def write(self, df:pandas.DataFrame, directory:str = None) -> None:
+    def write(self, df:pandas.DataFrame) -> None:
         """Write to CSV 
 
         :param df: Dataframe to Add to CSV
@@ -336,16 +274,14 @@ class CSV(File):
         :raises TypeError: Parameter Not Correct Type
         """
         
-        # Setup Directory to the Object's Directory
-        if directory is None: directory = self.directory
         
         # Check Parameter Types
-        if not checkType({directory:[str]}):
+        if not checkType({self.directory:[str]}):
             raise TypeError("Parameter Not Correct Type")
-         
+        
         # Write to CSV
-        df.to_csv(directory)
-
+        df.to_csv(self.directory, index=True)
+        
 # Folder Object
 class Folder:
     def __init__(self, directory:str = None) -> None:
@@ -355,54 +291,59 @@ class Folder:
         :type directory: str, optional
         """
         # Directory of File
-        if directory is None: directory = f"{LOCAL_DIRECTORY}/new/"
+        if directory is None: directory = f"{LOCAL_DIRECTORY}/new"
         
         # Set Directory Variable
         self.directory = directory
         
         # Creates File if Does Not Exist
-        if not self.exists(self.directory): self.create(self.directory)
+        if not self.exists(): self.create()
     
-    def exists(self, directory:str = None) -> bool:
-        """Checks if the Folder exists
-
-        :param directory: Folder Directory, defaults to None
-        :type directory: str, optional
-        :return: `True` Folder Exists, `False` Folder Does Not Exist
-        :rtype: bool
-        """
-        if directory is None: directory = self.directory
-        return os.path.isdir(directory)
-
-    def create(self, directory:str = None) -> None:
-        """Create Folder
-
-        :param directory: Folder Directory, defaults to None
-        :type directory: str, optional
-        """
-        if directory is None: directory = self.directory
-        os.makedirs(directory)
+    def exists(self) -> bool:
+        # Setup Directory to the Object's Directory
+        if self.directory is None: raise ValueError("No Directory")
         
-    def delete(self, directory:str = None) -> None:
-        """Delete Folder
+        # Check Directory Type
+        if not checkType({self.directory:[str]}): raise TypeError("directory is not a `str`")
+        
+        return os.path.isdir(self.directory)
 
-        :param directory: Folder Directory, defaults to None
-        :type directory: str, optional
-        """
-        if directory is None: directory = self.directory
+    def create(self) -> None:
+        
+        # Setup Directory to the Object's Directory
+        if self.directory is None: raise ValueError("No Directory")
+        
+        
+        # Check Directory Type
+        if not checkType({self.directory:[str]}): raise TypeError("directory is not a `str`")
+        
+        try:
+            os.makedirs(self.directory)
+        except FileExistsError:
+            pass
+        
+    def delete(self) -> None:
+        
+        # Setup Directory to the Object's Directory
+        if self.directory is None: raise ValueError("No Directory")
+        
+        # Check Directory Type
+        if not checkType({self.directory:[str]}): raise TypeError("directory is not a `str`")
         
         # Deletes the File
-        os.remove(directory)
+        shutil.rmtree(self.directory)
         
         # Sets Directory to None
         self.directory = None
    
     def rename(self, name:str) -> None:
-        """Rename Folder
-
-        :param name: New Folder Name
-        :type name: str
-        """
+        
+        # Setup Directory to the Object's Directory
+        if self.directory is None: raise ValueError("No Directory")
+        
+        # Check Directory Type
+        if not checkType({self.directory:[str]}): raise TypeError("directory is not a `str`")
+        
         # Directory List
         directoryList = self.directory.split("/")[:-1]
         
@@ -414,11 +355,13 @@ class Folder:
         self.directory = directory
              
     def move(self, newDirectory:str) -> None:
-        """Move Folder
-
-        :param newDirectory: New Folder Directory
-        :type newDirectory: str
-        """
+        
+        # Setup Directory to the Object's Directory
+        if self.directory is None: raise ValueError("No Directory")
+        
+        # Check Directory Type
+        if not checkType({self.directory:[str]}): raise TypeError("directory is not a `str`")
+        
         os.rename(self.directory, newDirectory)
         self.directory = newDirectory
     
