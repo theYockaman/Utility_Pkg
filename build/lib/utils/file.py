@@ -365,6 +365,10 @@ class Folder:
         os.rename(self.directory, newDirectory)
         self.directory = newDirectory
     
+    def fileExist(self, name:str) -> bool:
+        return os.path.isfile(self.directory+"/"+name) 
+    
+    
     def __str__(self)-> str:
         """Folder String
 
