@@ -29,6 +29,8 @@ class File:
         # Directory of File
         if directory is None: directory = f"{LOCAL_DIRECTORY}/new.txt"
         
+        if "/" in directory: directory = f"{LOCAL_DIRECTORY}/{directory}"
+        
         # Check Directory Type
         if not checkType({directory:[str]}): raise TypeError("directory is not a `str`")
             
@@ -114,8 +116,7 @@ class File:
         directoryList = self.directory.split("/")
         
         # File Type
-        fileType = directoryList[-1].split(".")[-1]
-        newDirectory = "/".join(directoryList[:-1])+"/" + name + '.' +fileType
+        newDirectory = "/".join(directoryList[:-1])+"/" + name + '.' +self.extension
         if newDirectory[0] == "/": newDirectory = newDirectory[1:]
         
         # Rename File
@@ -137,6 +138,11 @@ class File:
         
         # Setup Directory to the Object's Directory
         self.directory = newDirectory
+    
+    @property
+    def extension(self) -> str:
+        directoryList = self.directory.split("/")
+        return directoryList[-1].split(".")[-1]
     
     def __str__(self)-> str:
         
@@ -368,7 +374,11 @@ class Folder:
     def fileExist(self, name:str) -> bool:
         return os.path.isfile(self.directory+"/"+name) 
     
-    
+    @property
+    def files(self) -> list[File]:
+        
+        return [f for f in os.listdir(self.directory) if os.path.isfile(os.path.join(self.directory, f))]
+        
     def __str__(self)-> str:
         """Folder String
 

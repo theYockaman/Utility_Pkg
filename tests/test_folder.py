@@ -1,10 +1,9 @@
-from unittest import TestCase
 import unittest
 from utils import file
 import os
 import shutil
 
-class TestFolder(TestCase):
+class TestFolder(unittest.TestCase):
     
     def test_init(self):
         # Create Test Folder & Creates the Folder
@@ -94,7 +93,19 @@ class TestFolder(TestCase):
         
         # Deletes Folder
         shutil.rmtree(f.directory)
-   
+ 
+    def test_fileExist(self):
+        # Create Test Folder & Creates the Folder
+        f = file.Folder("new")
+        
+        # Rename Folder
+        exist = f.fileExist("test.txt")
+        
+        # If Folder Exists
+        self.assertFalse(exist)
+        
+        # Deletes Folder
+        shutil.rmtree(f.directory)
         
 if __name__ == '__main__':
     unittest.main()
