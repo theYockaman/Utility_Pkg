@@ -15,7 +15,6 @@ __all__ = [
     ,"functions"
     , "words"
     , "math"
-    , "package"
 ]
 
 
