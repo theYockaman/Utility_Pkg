@@ -42,45 +42,69 @@ def printTraceback() -> None:
     sys.exit()
 
 # Checks Variable DataType
-def checkType(variables:dict) -> bool:
+def checkType(variables:dict, raiseErrors:bool = False) -> bool:
     """Check Types of Variables
 
     :param variables: {Variable:[Types]} ex. {variableOne:[str,int,float]}
     :type variables: dict[list]
-    :raises ValueError: "Variables wrong type"
-    :raises ValueError: "Value wrong type"
+    :param raiseErrors: `True` raise Errors, `False` does not raise Errors
+    :type raiseErrors: bool
+    :raises ValueError: Variables Wrong Type: dict
     :return: `True` Types Valid with Variables , `False` Types Not Valid with Variables
     :rtype: bool
     """
     
     # Make sure Parameter is a Dictionary
-    if not isinstance(variables, dict): raise ValueError("Variables wrong type")
+    if not isinstance(variables, dict): raise ValueError("Variables Wrong Type: dict")
+    
+    # Return Value
+    rValue = True
     
     
     # Iterate through each in Variables
     for key, value in variables.items():
         
-        # List Variable
+        # List Variables
         if isinstance(value,list) or isinstance(value,set) or isinstance(value,tuple):
-            if key is None and None not in value: return False
+            
+            # Check if Variable is None and None is not in the List
+            if key is None and None not in value: 
+                rValue = False
+                break
 
+            # Check if Variable is None and None is in the List
             if key is None and None in value: continue
             
+            # Remove all None Values in the List
             if None in value: value.remove(None)
             
-            if type(key) not in value: return False
+            # Check type in List
+            boolValues = [checkType({key:x}) for x in value]
+            
+            if True in boolValues:
+                continue
+            else:
+                rValue = False
+                break
             
         else:
-            
+            # Check if Variable is None and Value is None
             if key is None and value is None: continue
             
-            if isinstance(key,value) is not True: return False
-            
-            
+            # Check Variable with Type
+            if isinstance(key,value) is not True:
+                rValue = False
+                break
+    
+    # Throw Errors
+    if rValue == False and raiseErrors == True:
+        string = "Variables not the Correct Type:\n"
+        for key, value in variables.items():
+            string += f"{key.__name__}: {value}\n"
         
-            
+        raise TypeError(string)
         
-    return True
+    return rValue
 
 # Check Duration of Code
 class Duration: 

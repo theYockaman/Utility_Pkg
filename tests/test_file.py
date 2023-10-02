@@ -108,7 +108,7 @@ class TestFile(TestCase):
         f.rename("newName")
         
         # If File Exists
-        self.assertEqual(f.directory,"newName.txt")
+        self.assertEqual(f.directory,f"{file.LOCAL_DIRECTORY}/newName.txt")
         
         # Deletes File
         os.remove(f.directory)

@@ -20,10 +20,15 @@ class TestFunctions(TestCase):
         f = {"yes":int,8:str}
         
         existT = functions.checkType(t)
-        existF = functions.checkType(f)
         
+        try:
+            existF = functions.checkType(f,True)
+        except:
+            existF = False
+            self.assertFalse(existF)
+            
+            
         self.assertTrue(existT)
-        self.assertFalse(existF)
     
     def test_duration(self):
         

@@ -65,15 +65,14 @@ class TestFolder(unittest.TestCase):
     def test_rename(self):
         # Create Test Folder & Creates the Folder
         f = file.Folder("new")
+        oldDirectory = f.directory
         
         # Rename Folder
         f.rename("testFolder")
         
-        # Check to see if the folder exists
-        exist = os.path.isdir("testFolder")
-        
         # If Folder Exists
-        self.assertTrue(exist)
+        self.assertTrue(os.path.isdir(f.directory))
+        self.assertFalse(os.path.isdir(oldDirectory))
         
         # Deletes Folder
         shutil.rmtree(f.directory)
@@ -106,6 +105,13 @@ class TestFolder(unittest.TestCase):
         
         # Deletes Folder
         shutil.rmtree(f.directory)
+    
+    def test_files(self):
         
+        # Create Test Folder & Creates the Folder
+        f = file.Folder("new")
+        
+    
+    
 if __name__ == '__main__':
     unittest.main()
