@@ -377,8 +377,8 @@ class Folder:
     @property
     def files(self) -> list[File]:
         
-        return [f for f in os.listdir(self.directory) if os.path.isfile(os.path.join(self.directory, f))]
-        
+        return [File(f) for f in os.listdir(self.directory) if os.path.isfile(os.path.join(self.directory, f))]
+    
     def __str__(self)-> str:
         """Folder String
 
