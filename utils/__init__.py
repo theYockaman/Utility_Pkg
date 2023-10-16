@@ -7,7 +7,7 @@ Utilities Package:
 
 
 # Import Modules
-from . import database, file, functions, package, words, math
+from . import database, file, functions, words, math
 
 __all__ = [
     "database"

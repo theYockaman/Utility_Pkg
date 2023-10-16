@@ -16,15 +16,18 @@ class TestFunctions(TestCase):
     def test_checkType(self):
         
         # Check Type
-        t = {"yes":str,8:int,None:None,8.0:[int,float]}
-        f = {"yes":int,8:str}
+        vt = ["yes",9,None,8.0]
+        vvt = [str,int,None,[int,float]]
         
-        existT = functions.checkType(t)
-        existF = functions.checkType(f)
+        vf = ["yes",8]
+        vvf = [int,str]
         
+        existT = functions.checkType(vt,vvt,False)
         self.assertTrue(existT)
+        
+        existF = functions.checkType(vf,vvf,False)
         self.assertFalse(existF)
-    
+           
     def test_duration(self):
         
         d = functions.Duration()

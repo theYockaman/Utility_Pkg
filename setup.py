@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "utils"
-    , version = "0.0.5"
+    , version = "0.0.6"
     , author = "Nathan Yockey"
     , author_email = 'n8teyock@gmail'
     , url = ''

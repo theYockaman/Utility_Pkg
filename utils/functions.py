@@ -26,7 +26,7 @@ def printSyntax(syntax, toPrint:bool = True) -> None:
     """
     
     # Check to Make sure toPrint Parameter is a Boolean Variable
-    if not checkType({toPrint:[bool]}): raise TypeError("toPrint Parameter is not a Boolean Type")
+    if not checkType([toPrint],[bool]): raise TypeError("toPrint Parameter is not a Boolean Type")
     
     # Print Syntax
     if toPrint is True: print(syntax)
@@ -42,39 +42,59 @@ def printTraceback() -> None:
     sys.exit()
 
 # Checks Variable DataType
-def checkType(variables:dict) -> bool:
-    """Check Types of Variables
+def checkType(variables:list, values:list, throwError:bool = True) -> bool:
+    """Checks the Data Types of Variables
 
-    :param variables: {Variable:[Types]} ex. {variableOne:[str,int,float]}
-    :type variables: dict[list]
-    :raises ValueError: "Variables wrong type"
-    :raises ValueError: "Value wrong type"
-    :return: `True` Types Valid with Variables , `False` Types Not Valid with Variables
+    :param variables: List of Variables ex. [variableOne, variableTwo]
+    :type variables: list
+    :param values: List of the Values of each Variable ex. [typeVariableOne, typeVariableTwo] or [str, int, float]
+    :type values: list
+    :param throwError: `True` Throws Errors `False` Does not Throw Errors, defaults to True
+    :type throwError: bool, optional
+    :raises ValueError: variables not `list` type
+    :raises ValueError: values not `list` type
+    :raises ValueError: throwError not `bool` type
+    :return: `True` if Variable and Types Match `False` if Variables do not Match
     :rtype: bool
     """
     
     # Make sure Parameter is a Dictionary
-    if not isinstance(variables, dict): raise ValueError("Variables wrong type")
+    if not isinstance(variables, list): raise ValueError("variables not `list` type")
+    
+    # Make sure Parameter is a Dictionary
+    if not isinstance(values, list): raise ValueError("values not `list` type")
+    
+    # Make sure Parameter is a Dictionary
+    if not isinstance(throwError, bool): raise ValueError("throwError not `bool` type")
     
     
     # Iterate through each in Variables
-    for key, value in variables.items():
-        
+    for variable, value in zip(variables, values):
         # List Variable
         if isinstance(value,list) or isinstance(value,set) or isinstance(value,tuple):
-            if key is None and None not in value: return False
+            if variable is None and None not in value: return False
 
-            if key is None and None in value: continue
+            if variable is None and None in value: continue
             
             if None in value: value.remove(None)
             
-            if type(key) not in value: return False
+            if type(variable) not in value:
+                 
+                # Throw Errors
+                if throwError: raise TypeError(f"{variable} not `{str(value)}` type")
+                
+                return False
             
         else:
             
-            if key is None and value is None: continue
+            if variable is None and value is None: continue
             
-            if isinstance(key,value) is not True: return False
+            if isinstance(variable,value) is not True: 
+                
+                # Throw Errors
+                if throwError: raise TypeError(f"{variable} not `{str(value)}` type")
+                
+                return False
             
             
         

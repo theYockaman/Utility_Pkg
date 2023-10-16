@@ -7,13 +7,43 @@ Database Module:
 
 
 # Import Modules
-import os, sqlite3, pandas
+import sqlite3, pandas, typing
+from .functions import checkType
+from .file import File
 
 __all__ = [
     "Column"
-    , "Table"
     , "Database"
+    , "TableExistsError"
+    , "TableNotFoundError"
+    , "DatabaseExistsError"
+    , "DatabaseNotFoundError"
 ]
+
+# Exceptions
+class TableExistsError(Exception):
+    def __init__(self, *args: object) -> None:
+        """Table Already Exists
+        """
+        super().__init__(*args)
+
+class TableNotFoundError(Exception):
+    def __init__(self, *args: object) -> None:
+        """Table Not Found
+        """
+        super().__init__(*args)
+
+class DatabaseExistsError(Exception):
+    def __init__(self, *args: object) -> None:
+        """Database Already Exists
+        """
+        super().__init__(*args)
+
+class DatabaseNotFoundError(Exception):
+    def __init__(self, *args: object) -> None:
+        """Database Not Found
+        """
+        super().__init__(*args)
 
 # Column Object for SQLite Database
 class Column:
@@ -59,116 +89,114 @@ class Column:
         """
         
         # SQL code for Column Creation
-        return f"{self.name} {self._convertType(self.dtype)}"
-
-    @property
-    def name(self) -> str:
-        return self._name
-    
-    @property
-    def dype(self) -> type:
-        return self._dtype
-
+        return f"{self._name} {self._convertType(self._dtype)}"
+  
 # Table Object for SQLite Database
 class Table:
     def __init__(self, name:str, connection:sqlite3.Connection, columns:list[Column] = None, **kwargs) -> None:
-        """_summary_
-
-        :param name: Name of the Table
-        :type name: str
-        :param connection: Connection to the Database
-        :type connection: sqlite3.Connection
-        :param columns: Columns in the Database, defaults to None
-        :type columns: list[Column], optional
-        :raises ValueError: "Table Does Not Exists And Requires `columns` parameter to be filled"
-        """
+        
         # Name, Connection, & Columns
         self._name = name
         self._connection = connection
         self._columns = columns
         
         # Checking Existance of the Table
-        if not  self.exist():
-            if columns is None: raise ValueError("Table Does Not Exists And Requires `columns` parameter to be filled")
+        if not self.exists():
+            
+            # Check Column Parameter Filled
+            if columns is None: raise TableNotFoundError("Table Does Not Exist, columns required to create")
 
-            self.create()
+            # Create Table
+            self._create()
             
         # Pass on Keyword Arguments
         self.__dict__.update(kwargs)
     
-    def exist(self, name:str = None, connection:sqlite3.Connection = None) -> bool:
-        """Checks Existance of Table in Database
+    @property
+    def name(self) -> str:
+        return self._name
+    
+    @property
+    def columns(self) -> list[Column]:
+        return self._columns
+    
+    def exists(self) -> bool:
+        """Table Exists
 
-        :param name: Name of the Table, defaults to None
-        :type name: str, optional
-        :param connection: Connection to Database, defaults to None
-        :type connection: sqlite3.Connection, optional
-        :return: `True` Table Exists, `False` Table Does Not Exist
+        :return: `True` if it Exists, `False` if it does not Exist
         :rtype: bool
         """
-        # Set Name & Connection to Self
-        if name is None or connection is None:
-            name = self._name
-            connection = self._connection
             
         # Checks Existance of Table
-        return connection.execute(f"SELECT name FROM sqlite_master WHERE type ='table' AND name ='{name}';").fetchone() is not None
+        if self._connection is None: return False
+        
+        return self._connection.execute(f"SELECT name FROM sqlite_master WHERE type ='table' AND name ='{self._name}';").fetchone() is not None
           
-    def create(self, name:str = None, columns:list[Column] = None, connection:sqlite3.Connection = None) -> None:
+    def _create(self) -> None:
+        """Create Table in Database
+
+        :raises TableNotFoundError:
+        """
         
-        # Set Name & Connection to Self
-        if name is None or columns is None or connection is None:
-            name = self._name
-            columns = self._columns
-            connection = self._connection
-        
-        
-        if not Table.exist(name,connection):
+        # If the Table Does Not Exist
+        if not self.exists():
     
             # Creates the SQL Code
-            sql = f"CREATE TABLE {name} ("
+            sql = f"CREATE TABLE {self._name} ("
             
-            for column in columns:
-                if column == columns[-1]:
-                    sql += column.sql
-                else:
-                    sql += f"{column.sql}, "
+            # Adds Each Column in the Table
+            for column in self._columns:
+                
+                # Add each Column 
+                sql += column.sql
+                
+                # If Last Column
+                if column != self._columns[-1]:
+                    sql += ", "
                 
             sql += ") ;"
+            
             # Creating Tables
-            connection.execute(sql)
-            connection.commit()
+            self._connection.execute(sql)
+            self._connection.commit()
+            
+        else:
+            raise TableNotFoundError()
         
-    def delete(self, name:str = None, connection:sqlite3.Connection = None) -> None:
-        """Deletes Table from Database
+    def delete(self) -> None:
+        """Delete Table from Database
 
-        :param name: Name of the Table, defaults to None
-        :type name: str, optional
-        :param connection: Connection to Database, defaults to None
-        :type connection: sqlite3.Connection, optional
+        :raises TableNotFoundError:
         """
-        # Set Name & Connection to Self
-        if name is None or connection is None:
-            name = self._name
-            connection = self._connection
         
         # Checking the existance of the Table in the Database
-        if Table.exist(name, connection): 
+        if self.exists(): 
         
             # Deleting the Table
-            connection.execute(f"DROP TABLE {name};")
-            connection.commit()
+            self._connection.execute(f"DROP TABLE {self._name};")
+            self._connection.commit()
+            self._connection = None
+            
+        else:
+            raise TableNotFoundError()
         
     def update(self, df:pandas.DataFrame) -> None:
         """Changes DataFrame to Database Table
 
         :param df: DataFrame to Update Database
         :type df: DataFrame
+        :raises TableNotFoundError:
         """
         
-        # Turns DataFrame into 
-        df.to_sql(self._name,self._connection, if_exists='replace', index = False)
-   
+        # Checking the existance of the Table in the Database
+        if self.exists(): 
+        
+            # Turns DataFrame into 
+            df.to_sql(self._name,self._connection, if_exists='replace', index = False)
+            
+        else:
+            raise TableNotFoundError()
+    
     @property
     def data(self) -> pandas.DataFrame:
         """Data DataFrame in the Table Database
@@ -181,93 +209,128 @@ class Table:
 
 # Database Object for SQLite Database
 class Database:
-    def __init__(self, directory:str, **kwargs) -> None:
-        """Database Object for SQLite
-
-        :param directory: SQLite Database Directory
-        :type directory: str
-        """
+    def __init__(self, directory:str = None, **kwargs) -> None:
+    
+        
+        # File Creation
+        self._file = File(directory, "db")
         
         # Database Directory
-        self._directory = directory
-        
-        # Create Database if does not Exist
-        if not self.exist(): self.create()
+        self._directory = self._file.directory
         
         # Database Connection
-        self._connection = sqlite3.connect(directory,timeout=8)
+        self._connection = sqlite3.connect(self._directory, timeout=8)
+        
+        # Tables 
+        self._tables = self._getTables()
         
         # Pass on Keyword Arguments
         self.__dict__.update(kwargs)
-        
-    def exist(self, directory:str = None) -> bool:
-        """Checks Existance of Database
+      
+    @property
+    def directory(self) -> str:
+        """Directory of the Database File
 
-        :param directory: Directory of SQLite Database, defaults to self.directory
-        :type directory: str, optional
-        :raises ValueError: "Not a .db file directory"
-        :return: `True` Database Exists, `False` Database Does Not Exist
-        :rtype: bool
+        :return: Database File (.db)
+        :rtype: str
         """
-        # Assign Directory to Self if Directory is none existance
-        if directory == None: directory = self._directory
+        return self._directory  
         
-        # Checks to see if Directory is a .db file
-        if directory[-3:] != ".db": raise ValueError("Not a .db file directory")
-        
-        # Checks Directory Existance
-        return os.path.exists(directory)
-    
-    def create(self, directory:str = None) -> None:
-        """Creates Database
+    @property
+    def connection(self) -> sqlite3.Connection:
+        """Connection of the Database
 
-        :param directory: Database Directory, defaults to self.directory
-        :type directory: str, optional
+        :return: Connection to the Database
+        :rtype: sqlite3.Connection
         """
+        return self._connection  
         
-        # Assign Directory to Self if Directory is none existance
-        if directory == None: directory = self._directory
-        
-        # Checks to see if the Database already exists
-        if not Database.exist(directory):
-        
-            # Creation of the Database File
-            with open(directory,"x") as file:
-                pass
-    
-    def delete(self, directory:str = None) -> None:
-        """Delete Database
-
-        :param directory: Database Directory, defaults to None
-        :type directory: str, optional
-        """
-        
-        # Assign Directory to Self if Directory is none existance
-        if directory == None: directory = self._directory
-        
-        # Checks to see if the Database already exists
-        if Database.exist(directory):
-            os.remove(directory)
-    
     @property
     def tables(self) -> list[Table]:
-        """Returns Tables Stored in Database
+        return self._tables    
+         
+    def exists(self) -> bool:
+        return self._file.exists()  
+         
+    def delete(self) -> None:
+        """Delete Database
 
-        :return: Tables Stored in Database
+        :raises DatabaseNotFoundError:
+        """
+        
+        # Checks to see if the Database already exists
+        if self._file.exists():
+            
+            # Delete File 
+            self._file.delete()
+            
+            # Clear Variables
+            self._directory = None
+            self._connection = None
+            self._tables = None
+            
+        else:
+            raise DatabaseNotFoundError()
+    
+    def addTable(self, name:str, columns:list[Column] = None) -> Table:
+        """Add Table to Database
+
+        :param name: Table Name/ Table Object
+        :type name: str
+        :param columns: Columns of Table 
+        :type columns: list[Column]
+        :return: Table Added to Database
+        :rtype: Table
+        """
+        
+        # Check Directory Type
+        checkType([name, columns],[str, list])
+        
+        # Create Table
+        t = Table( name, self._connection, columns)
+        
+        # Add Table to List of Tables
+        self._tables.append(t)
+        
+        return t
+      
+    def removeTable(self, name:str) -> None:
+        """Remove Table
+
+        :param name: Name of the Table
+        :type name: str
+        :raises TableNotFoundError: 
+        """
+        
+        # Check Name Type
+        checkType([name],[str])
+        
+        # Check if it Table Exists
+        if name not in [x.name for x in self._tables]: raise TableNotFoundError()
+        
+        # Remove the Table
+        for x in self._tables:
+            if name == x.name:
+                
+                # Delete Table
+                x.delete()
+                self._tables.remove(x)
+            
+        
+             
+    def _getTables(self) -> list[Table]:
+        """Gathers Tables in the Database
+
+        :return: Tables in the Database
         :rtype: list[Table]
         """
+        
         # Table Names
         tableNames = [name[0] for name in self._connection.execute("SELECT name FROM sqlite_master WHERE type='table';").fetchall()]
         
         # Create a Table Objects
         return [Table(name, self._connection) for name in tableNames]
-    
-    @property
-    def name(self) -> str:
-        return self._name
-              
-    @property
-    def connection(self) -> sqlite3.Connection:
-        return self._connection   
-              
-           
+         
+         
+         
+    isinstance

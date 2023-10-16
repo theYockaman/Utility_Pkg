@@ -21,30 +21,30 @@ def sigmoid(x:Union[pd.DataFrame,pd.Series,int,float]) -> Union[pd.DataFrame,pd.
     :rtype: Union[pd.DataFrame,pd.Series,int,float]
     """
     
-    if checkType({x:[pd.DataFrame,pd.Series]}):
+    # Check X Type
+    checkType([x],[[pd.DataFrame,pd.Series,int,float]])
+    
+    # Different Sigmoid X Types 
+    if checkType([x],[[pd.DataFrame,pd.Series]],False):
         return 1.0 / (1.0 + np.exp(-x))
     
-    elif checkType({x:[int,float]}):
+    elif checkType([x],[[int,float]],False):
         return 1 / (1 + math.exp(-x))
     
-    else:
-        raise TypeError("Wrong Type: Change Input Type")
-
 # Average Function
 def average(x:list) -> Union[int,float]:
     """Average Value of a List
 
     :param x: Values to find the Average
     :type x: list
-    :raises TypeError: Not a List Type
     :return: Average Value
     :rtype: Union[int,float]
     """
     
-    if checkType({x:list}):
-        return sum(x)/len(x)
+    # Check X Type
+    checkType([x],[list])
     
-    else:
-        raise TypeError("Not a List Type")
+    # Calculate Average
+    return sum(x)/len(x)
     
     
