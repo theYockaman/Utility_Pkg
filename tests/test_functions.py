@@ -2,6 +2,8 @@ from unittest import TestCase
 import unittest
 from utils import functions
 from time import sleep
+import pandas
+from typing import List
 
 class TestFunctions(TestCase):
     
@@ -16,18 +18,44 @@ class TestFunctions(TestCase):
     def test_checkType(self):
         
         # Check Type
-        vt = ["yes",9,None,8.0]
-        vvt = [str,int,None,[int,float]]
+        v = ["yes",9,None,8.0]
+        vv = [str,int,None,[int,float]]
         
-        vf = ["yes",8]
-        vvf = [int,str]
+        exist = functions.checkType(v,vv,False)
+        self.assertTrue(exist)
         
-        existT = functions.checkType(vt,vvt,False)
-        self.assertTrue(existT)
         
-        existF = functions.checkType(vf,vvf,False)
-        self.assertFalse(existF)
-           
+        
+        
+        v = ["yes",8]
+        vv = [int,str]
+        
+        exist = functions.checkType(v,vv,False)
+        self.assertFalse(exist)
+        
+        
+        
+        v = ["yes",8]
+        vv = [int,[int,str]]
+        
+        exist = functions.checkType(v,vv,False)
+        self.assertFalse(exist)
+        
+        
+        v = ["yes",["t","v"]]
+        vv = [int,[int,str]]
+        
+        exist = functions.checkType(v,vv,False)
+        self.assertFalse(exist)
+        
+        oneDF = pandas.Series()
+        twoDF = pandas.Series()
+        
+        var = [oneDF,twoDF]
+        exist = functions.checkType([var],[List[pandas.Series]],False)
+        self.assertTrue(exist)
+        
+        
     def test_duration(self):
         
         d = functions.Duration()

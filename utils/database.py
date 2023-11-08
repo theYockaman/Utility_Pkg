@@ -266,7 +266,6 @@ class Database:
             # Clear Variables
             self._directory = None
             self._connection = None
-            self._tables = None
             
         else:
             raise DatabaseNotFoundError()
@@ -288,9 +287,6 @@ class Database:
         # Create Table
         t = Table( name, self._connection, columns)
         
-        # Add Table to List of Tables
-        self._tables.append(t)
-        
         return t
       
     def removeTable(self, name:str) -> None:
@@ -305,15 +301,14 @@ class Database:
         checkType([name],[str])
         
         # Check if it Table Exists
-        if name not in [x.name for x in self._tables]: raise TableNotFoundError()
+        if name not in [x.name for x in self.tables]: raise TableNotFoundError()
         
         # Remove the Table
-        for x in self._tables:
+        for x in self.tables:
             if name == x.name:
                 
                 # Delete Table
                 x.delete()
-                self._tables.remove(x)
             
         
              
@@ -332,4 +327,3 @@ class Database:
          
          
          
-    isinstance

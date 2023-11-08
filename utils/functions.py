@@ -5,7 +5,7 @@ Basic Functions to be used various projects, but to simplify the process while w
 """
 
 # Import Modules
-import traceback, sys, time
+import traceback, sys, time, typesentry
 
 __all__ = [
     "printSyntax"
@@ -57,6 +57,9 @@ def checkType(variables:list, values:list, throwError:bool = True) -> bool:
     :return: `True` if Variable and Types Match `False` if Variables do not Match
     :rtype: bool
     """
+    # Setup New isinstance() Function
+    tc1 = typesentry.Config()
+    is_typed = tc1.is_type
     
     # Make sure Parameter is a Dictionary
     if not isinstance(variables, list): raise ValueError("variables not `list` type")
@@ -68,38 +71,55 @@ def checkType(variables:list, values:list, throwError:bool = True) -> bool:
     if not isinstance(throwError, bool): raise ValueError("throwError not `bool` type")
     
     
+    
     # Iterate through each in Variables
     for variable, value in zip(variables, values):
-        # List Variable
-        if isinstance(value,list) or isinstance(value,set) or isinstance(value,tuple):
-            if variable is None and None not in value: return False
+        
+        # Null Variable Value
+        if variable is None and value is None: continue
+        
+        try:
+            isinstance(value,(list,set,tuple))
+        except TypeError:
+            
+            if not is_typed(variable, value):
+                # Throw Errors
+                if throwError: raise TypeError(f"{variable} not `{str(value)}` type")
+                
+                return False
+            
+        if isinstance(value,(list,set,tuple)):
+                
+                if variable is None and None not in value: return False
 
-            if variable is None and None in value: continue
-            
-            if None in value: value.remove(None)
-            
-            if type(variable) not in value:
-                 
-                # Throw Errors
-                if throwError: raise TypeError(f"{variable} not `{str(value)}` type")
+                if variable is None and None in value: continue
                 
-                return False
-            
+                if None in value: value.remove(None)
+                
+                
+                
+                if any(is_typed(variable,v) for v in value):
+                    continue
+                
+                else:
+                    for v in value:
+                        if not is_typed(variable,v):
+                            # Throw Errors
+                            if throwError: raise TypeError(f"{variable} not `{str(value)}` type")
+                            
+                            return False
+                
         else:
-            
-            if variable is None and value is None: continue
-            
-            if isinstance(variable,value) is not True: 
-                
+            if not is_typed(variable, value):
                 # Throw Errors
                 if throwError: raise TypeError(f"{variable} not `{str(value)}` type")
                 
                 return False
-            
-            
         
-            
         
+        
+        
+                
     return True
 
 # Check Duration of Code

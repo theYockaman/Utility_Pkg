@@ -371,6 +371,9 @@ class Folder:
         # Directory of File
         if directory is None: directory = f"{LOCAL_DIRECTORY}/new"
         
+        # Create Local Directory
+        if "/" not in directory: directory = f"{LOCAL_DIRECTORY}/{directory}"
+        
         # Check Directory Type
         checkType([directory],[str])
         
@@ -413,7 +416,7 @@ class Folder:
         """
         
         # Setup Directory to the Object's Directory
-        if self.exists(): raise ValueError("Directory already")
+        if self.exists(): raise ValueError("Directory already Exists")
         
         try:
             os.makedirs(self.directory)
