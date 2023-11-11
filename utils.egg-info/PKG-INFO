@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: utils
-Version: 0.0.6
+Version: 0.0.7
 Summary: Utils Package is universal across building of other Python Projects
 Home-page: 
 Author: Nathan Yockey
@@ -9,3 +9,50 @@ Description-Content-Type: text/markdown
 
 # Utility_Pkg
 
+## Database
+
+### Column
+
+### Database
+
+### DatabaseExistsError
+
+### DatabaseNotFoundError
+
+### Table
+
+### TableExistsError
+
+### TableNotFoundError
+
+## File
+
+### CSV
+
+### File
+
+### Folder
+
+### JSON
+
+### LOCAL_DIRECTORY
+
+### TXT
+
+## Functions
+
+### printSyntax
+
+### printTraceback
+
+### checkType
+
+### Duration
+
+## Math
+
+### sigmoid
+
+### average
+
+## Words
