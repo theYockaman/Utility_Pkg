@@ -55,9 +55,7 @@ class File:
         # Check if File Directory is the Correct Type
         if not self.isType(): raise TypeError("Directory Not Correct Extension")
         
-        # Creates File if Does Not Exist
-        if not self.exists(): self._create()
-        
+
     def isType(self) -> bool:
         """Check File Extension make Sure it is Correct
 
