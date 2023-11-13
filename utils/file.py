@@ -7,6 +7,8 @@ File Objects: Easy to manipulate Files: TXT, JSON, CSV, and Folder.
 # Imported Modules
 import os, json, pandas, abc
 from .functions import checkType
+from joblib import dump, load
+from typing import TypeVar
 import pathlib
 import shutil
 
@@ -15,6 +17,7 @@ __all__ = [
     , "TXT"
     , "JSON"
     , "CSV"
+    , "BIN"
     , "Folder"
     , "LOCAL_DIRECTORY"
 ]
@@ -359,6 +362,50 @@ class CSV(File):
         
         # Write to CSV
         df.to_csv(self.directory, index=True)
+
+# Bin File Object
+class BIN(File):
+    def __init__(self, directory:str = None) -> None:
+        """BIN File Object
+
+        :param directory: BIN File Directory, defaults to None
+        :type directory: str, optional
+        """
+        
+        super().__init__(directory, "bin")
+
+    def read(self):
+        """BIN Read File
+
+        :raises ValueError: No Directory
+        :raises TypeError: Directory is not a `str`
+        :return: BIN File Data
+        :rtype: pandas.DataFrame
+        """
+        
+        # Setup Directory to the Object's Directory
+        if self.directory is None: raise ValueError("No Directory")
+        
+        return load(self.directory)
+    
+    def write(self, obj:object) -> None:
+        """Write to BIN File Data
+
+        :param obj: Class or Object that you want to save for later
+        :type df: object
+        :raises ValueError: No Directory
+        """
+        # Setup Directory to the Object's Directory
+        if self.directory is None: raise ValueError("No Directory")
+        
+        # Check Parameter Types
+        checkType([obj],[object])
+        
+        # Write to BIN
+        dump(obj, self.directory, True)
+
+
+
         
 # Folder Object
 class Folder:
@@ -395,7 +442,7 @@ class Folder:
         :rtype: list[File]
         """
         
-        return [File(f"{LOCAL_DIRECTORY}/{f}") for f in os.listdir(self.directory) if os.path.isfile(os.path.join(self.directory, f))]
+        return [File(f"{self.directory}/{f}") for f in os.listdir(self.directory) if os.path.isfile(os.path.join(self.directory, f))]
     
     def exists(self) -> bool:
         """Checks Existance of the Folder
@@ -456,7 +503,7 @@ class Folder:
         directoryList = self._directory.split("/")[:-1]
         
         # File Type
-        directory = "/".join(directoryList) + name
+        directory = "/".join(directoryList) +"/"+ name
         
         # Rename File
         os.rename(self._directory, directory)
