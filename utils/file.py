@@ -55,7 +55,6 @@ class File:
         # Check if File Directory is the Correct Type
         if not self.isType(): raise TypeError("Directory Not Correct Extension")
         
-
     def isType(self) -> bool:
         """Check File Extension make Sure it is Correct
 
@@ -80,14 +79,14 @@ class File:
         return os.path.isfile(self._directory)
 
     @abc.abstractmethod
-    def _create(self) -> None:
+    def create(self) -> None:
         """Create the File Object
 
-        :raises FileExistsError:
+        :raises FileExistsError: File Already Exists
         """
         
         # Setup Directory to the Object's Directory
-        if self.exists(): raise FileExistsError()
+        if self.exists(): raise FileExistsError("File Already Exists")
         
         # Creates the File
         with open(self.directory,"x"):
@@ -100,7 +99,7 @@ class File:
         """
         
         # Setup Directory to the Object's Directory
-        if not self.exists(): raise FileNotFoundError()
+        if not self.exists(): raise FileExistsError("File Does Not Exists")
         
         # Deletes the File
         os.remove(self._directory)
@@ -118,7 +117,7 @@ class File:
         """
         
         # Setup Directory to the Object's Directory
-        if not self.exists(): raise FileNotFoundError()
+        if not self.exists(): raise FileExistsError("File Does Not Exists")
         
         # Reads the file
         with open(self.directory) as file:
@@ -136,7 +135,7 @@ class File:
         """
         
         # Setup Directory to the Object's Directory
-        if not self.exists(): raise FileNotFoundError()
+        if not self.exists(): raise FileExistsError("File Does Not Exists")
         
         # Check Directory Type
         checkType([data],[str])
@@ -154,7 +153,7 @@ class File:
         """
         
         # Setup Directory to the Object's Directory
-        if not self.exists(): raise FileNotFoundError()
+        if not self.exists(): raise FileExistsError("File Does Not Exists")
         
         # Check Directory Type
         checkType([name],[str])
@@ -181,7 +180,7 @@ class File:
         """
         
         # Setup Directory to the Object's Directory
-        if not self.exists(): raise FileNotFoundError()
+        if not self.exists(): raise FileExistsError("File Does Not Exists")
         
         # Check Directory Type
         checkType([newDirectory],[str])
@@ -208,6 +207,7 @@ class File:
         :return: File Object Extension
         :rtype: str
         """
+        
         directoryList = self._directory.split("/")
         return directoryList[-1].split(".")[-1]
     
@@ -218,6 +218,7 @@ class File:
         :return: Name of the File Object
         :rtype: str
         """
+        
         return self.directory.split("/")[-1].split(".")[0]
     
     def __str__(self)-> str:
@@ -227,8 +228,8 @@ class File:
         :rtype: str
         """
         
-        # Fill in No Directory
-        if self.directory is None: return "No Directory Avaliable"
+        # Setup Directory to the Object's Directory
+        if not self.exists(): raise FileExistsError("File Does Not Exists")
         
         return self.directory
 
@@ -253,7 +254,7 @@ class JSON(File):
         
         super().__init__(directory,"json")
 
-    def _create(self) -> None:
+    def create(self) -> None:
         """Create JSON File
 
         :param directory: JSON File Directory, defaults to None
@@ -262,7 +263,7 @@ class JSON(File):
         """
         
         # Setup Directory to the Object's Directory
-        if self.directory is None: raise ValueError("No Directory")
+        if self.exists(): raise FileExistsError("File Already Exists")
         
         # Create a JSON File 
         with open(self.directory,'x') as file:
@@ -283,7 +284,7 @@ class JSON(File):
         """
         
         # Setup Directory to the Object's Directory
-        if self.directory is None: raise ValueError("No Directory")
+        if not self.exists(): raise FileExistsError("File Does Not Exists")
         
         # Reading in the Data
         with open(self.directory, "r") as file:
@@ -302,7 +303,7 @@ class JSON(File):
         """
         
         # Setup Directory to the Object's Directory
-        if self.directory is None: raise ValueError("No Directory")
+        if not self.exists(): raise FileExistsError("File Does Not Exists")
         
         # Check Parameter Types
         checkType([data],[dict])
@@ -332,7 +333,7 @@ class CSV(File):
         """
         
         # Setup Directory to the Object's Directory
-        if self.directory is None: raise ValueError("No Directory")
+        if not self.exists(): raise FileExistsError("File Does Not Exists")
         
         # Get Dataframe
         try:
@@ -353,7 +354,7 @@ class CSV(File):
         :raises TypeError: _description_
         """
         # Setup Directory to the Object's Directory
-        if self.directory is None: raise ValueError("No Directory")
+        if not self.exists(): raise FileExistsError("File Does Not Exists")
         
         # Check Parameter Types
         checkType([df],[pandas.DataFrame])
@@ -382,7 +383,7 @@ class BIN(File):
         """
         
         # Setup Directory to the Object's Directory
-        if self.directory is None: raise ValueError("No Directory")
+        if not self.exists(): raise FileExistsError("File Does Not Exists")
         
         return load(self.directory)
     
@@ -394,7 +395,7 @@ class BIN(File):
         :raises ValueError: No Directory
         """
         # Setup Directory to the Object's Directory
-        if self.directory is None: raise ValueError("No Directory")
+        if not self.exists(): raise FileExistsError("File Does Not Exists")
         
         # Check Parameter Types
         checkType([obj],[object])
@@ -424,10 +425,7 @@ class Folder:
         
         # Set Directory Variable
         self._directory = directory
-        
-        # Creates File if Does Not Exist
-        if not self.exists(): self._create()
-    
+         
     @property
     def directory(self) -> str:
         return self._directory
@@ -439,6 +437,9 @@ class Folder:
         :return: Files in the Folder
         :rtype: list[File]
         """
+        
+        # Setup Directory to the Object's Directory
+        if self.exists(): raise ValueError("Directory Does Not Exists")
         
         return [File(f"{self.directory}/{f}") for f in os.listdir(self.directory) if os.path.isfile(os.path.join(self.directory, f))]
     
@@ -454,7 +455,7 @@ class Folder:
         
         return os.path.isdir(self._directory)
 
-    def _create(self) -> None:
+    def create(self) -> None:
         """Create the Folder 
 
         :raises ValueError: No Directory
@@ -475,7 +476,7 @@ class Folder:
         """
         
         # Setup Directory to the Object's Directory
-        if not self.exists(): raise ValueError("No Directory")
+        if not self.exists(): raise ValueError("Directory Does Not Exists")
         
         # Deletes the File
         shutil.rmtree(self.directory)
@@ -492,7 +493,7 @@ class Folder:
         """
         
         # Setup Directory to the Object's Directory
-        if not self.exists(): raise ValueError("No Directory")
+        if self.exists(): raise ValueError("Directory Does Not Exists")
         
         # Check Name Type
         checkType([name],[str])
@@ -516,7 +517,7 @@ class Folder:
         """
         
         # Setup Directory to the Object's Directory
-        if not self.exists(): raise ValueError("No Directory")
+        if not self.exists(): raise ValueError("Directory Does Not Exists")
         
         # Check Directory Type
         checkType([newDirectory],[str])
@@ -535,6 +536,9 @@ class Folder:
         # Check Name Parameter
         checkType([name],[str])
         
+        # Setup Directory to the Object's Directory
+        if not self.exists(): raise ValueError("Directory Does Not Exists")
+        
         return os.path.isfile(self.directory+"/"+name) 
     
     def __str__(self)-> str:
@@ -543,5 +547,7 @@ class Folder:
         :return: Folder Directory
         :rtype: str
         """
-        if self.directory is None: return "No Directory Available"
+        # Setup Directory to the Object's Directory
+        if  not self.exists(): raise ValueError("Directory Does Not Exists")
+        
         return self.directory
