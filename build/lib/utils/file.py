@@ -27,7 +27,7 @@ LOCAL_DIRECTORY = pathlib.Path().resolve()
 
 # Inital File Object to Base around Specific Files
 class File:
-    def __init__(self, directory:str = None, extIntent:str = "txt") -> None:
+    def __init__(self, directory:str = None, extIntent:str = "txt", creation:bool = True) -> None:
         """File Object
 
         :param directory: Directory of the File, defaults to None
@@ -54,6 +54,10 @@ class File:
         
         # Check if File Directory is the Correct Type
         if not self.isType(): raise TypeError("Directory Not Correct Extension")
+        
+        # Create the File
+        if creation is True and not self.exists():
+            self.create()
         
     def isType(self) -> bool:
         """Check File Extension make Sure it is Correct
@@ -235,24 +239,24 @@ class File:
 
 # TXT File Object
 class TXT(File):
-    def __init__(self, directory:str = None) -> None:
+    def __init__(self, directory:str = None, creation:bool = True) -> None:
         """Text File Object
 
         :param directory: Text File Directory, defaults to None
         :type directory: str, optional
         """
-        super().__init__(directory,"txt") 
+        super().__init__(directory,"txt", creation) 
 
 # JSON File Object
 class JSON(File):
-    def __init__(self, directory:str = None) -> None:
+    def __init__(self, directory:str = None, creation:bool = True) -> None:
         """JSON File Object
 
         :param directory: JSON File Directory, defaults to None
         :type directory: str, optional
         """
         
-        super().__init__(directory,"json")
+        super().__init__(directory,"json",creation)
 
     def create(self) -> None:
         """Create JSON File
@@ -314,14 +318,14 @@ class JSON(File):
 
 # CSV File Object
 class CSV(File):
-    def __init__(self, directory:str = None) -> None:
+    def __init__(self, directory:str = None, creation:bool = True) -> None:
         """CSV File Object
 
         :param directory: CSV File Directory, defaults to None
         :type directory: str, optional
         """
         
-        super().__init__(directory, "csv")
+        super().__init__(directory, "csv",creation)
 
     def read(self) -> pandas.DataFrame:
         """CSV Read File
@@ -364,14 +368,14 @@ class CSV(File):
 
 # Bin File Object
 class BIN(File):
-    def __init__(self, directory:str = None) -> None:
+    def __init__(self, directory:str = None, creation:bool = True) -> None:
         """BIN File Object
 
         :param directory: BIN File Directory, defaults to None
         :type directory: str, optional
         """
         
-        super().__init__(directory, "bin")
+        super().__init__(directory, "bin", creation)
 
     def read(self):
         """BIN Read File
@@ -408,7 +412,7 @@ class BIN(File):
         
 # Folder Object
 class Folder:
-    def __init__(self, directory:str = None) -> None:
+    def __init__(self, directory:str = None, creation:bool = True) -> None:
         """Folder Object
 
         :param directory: Folder Directory, defaults to None
@@ -425,6 +429,10 @@ class Folder:
         
         # Set Directory Variable
         self._directory = directory
+        
+        # Create the Directory
+        if creation is True and not self.exists():
+            self.create()
          
     @property
     def directory(self) -> str:
