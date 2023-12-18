@@ -8,7 +8,7 @@ File Objects: Easy to manipulate Files: TXT, JSON, CSV, and Folder.
 import os, json, pandas, abc
 from .functions import checkType
 from joblib import dump, load
-from typing import TypeVar
+from typing import Union
 import pathlib
 import shutil
 
@@ -195,6 +195,19 @@ class File:
         # Setup Directory to the Object's Directory
         self._directory = newDirectory
     
+    def copy(self, newDirectory:str) -> str:
+        """Copy File
+
+        :param newDirectory: Location for New File
+        :type newDirectory: str
+        :return: Directory of File
+        :rtype: str
+        """
+        f = File(newDirectory,self.extension)
+        f.write(self.read())
+        
+        return newDirectory
+        
     @property
     def directory(self) -> str:
         """Directory of the File
@@ -407,9 +420,7 @@ class BIN(File):
         # Write to BIN
         dump(obj, self.directory, True)
 
-
-
-        
+ 
 # Folder Object
 class Folder:
     def __init__(self, directory:str = None, creation:bool = True) -> None:
@@ -439,17 +450,17 @@ class Folder:
         return self._directory
     
     @property
-    def files(self) -> list[File]:
-        """Files in the Folder
+    def content(self) -> list[str]:
+        """Content in the Folder
 
-        :return: Files in the Folder
-        :rtype: list[File]
+        :return: Content in the Folder
+        :rtype: list[str]
         """
         
         # Setup Directory to the Object's Directory
         if self.exists(): raise ValueError("Directory Does Not Exists")
         
-        return [File(f"{self.directory}/{f}") for f in os.listdir(self.directory) if os.path.isfile(os.path.join(self.directory, f))]
+        return [f for f in os.listdir(self.directory)]
     
     def exists(self) -> bool:
         """Checks Existance of the Folder
@@ -548,6 +559,23 @@ class Folder:
         if not self.exists(): raise ValueError("Directory Does Not Exists")
         
         return os.path.isfile(self.directory+"/"+name) 
+    
+    def copy(self, newDirectory:str) -> str:
+        from os import path
+        
+        f = Folder(newDirectory)
+        
+        for x in self.content:
+            if path.isfile(x):
+                file = File(x)
+                file.copy(f"{newDirectory}/{file.name}.{file.extension}")
+            else:
+                folder = Folder(x)
+                folder.copy(f"{newDirectory}/{folder.name}")
+                
+    @property
+    def name(self) -> str:
+        return self.directory.split("/")[-1]
     
     def __str__(self)-> str:
         """Folder String

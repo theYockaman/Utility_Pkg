@@ -1,0 +1,129 @@
+
+/* Main Styles */
+.nav.nav--hrz.nav--main + .main {
+    padding-top:100px;
+}
+
+.nav.nav--vrt.nav--main + .main {
+    padding-left:170px;
+}
+
+
+/* Main Flex */
+.main--flex{
+    display: flex;
+    flex-direction: column;
+    gap:20px;
+    align-items: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Text Section Styles */
+.textSection{
+    padding:10px;
+    margin:10px;
+    background-color: aqua;
+}
+
+
+
+
+
+
+/* Text Section Heading */
+.textSection__heading{
+    font-size: 30px;
+}
+
+
+
+
+
+/* Text Seciton Subtitle */
+.textSection__subtitle{
+    font-size: 25px;
+}
+
+
+
+
+
+/* Text Section Paragraph */
+.textSection__paragraph {
+    font-size:20px;
+}
+
+
+
+
+/* Text Section Image */
+.textSection__image{
+    width:100px;
+    height:100px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Gallery Styles */
+.gallery{
+    padding:10px;
+    margin:10px; 
+    width:80%; 
+}
+
+
+
+
+/* Gallery Container */
+.gallery__container{
+    padding:10px;
+    margin:10px;
+    display: flex;
+    gap:20px;
+    flex-wrap: wrap;
+}
+
+
+
+
+
+/* Gallery Heading */
+.gallery__heading{
+    font-size: 30px;
+}
+
+
+
+
+
+
