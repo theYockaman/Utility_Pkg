@@ -52,9 +52,6 @@ class File:
         # Intialize directory variable 
         self._directory = directory
         
-        # Check if File Directory is the Correct Type
-        if not self.isType(): raise TypeError("Directory Not Correct Extension")
-        
         # Create the File
         if creation is True and not self.exists():
             self.create()
@@ -458,9 +455,9 @@ class Folder:
         """
         
         # Setup Directory to the Object's Directory
-        if self.exists(): raise ValueError("Directory Does Not Exists")
+        if not self.exists(): raise ValueError("Directory Does Not Exists")
         
-        return [f for f in os.listdir(self.directory)]
+        return [f"{self.directory}/{f}" for f in os.listdir(self.directory)]
     
     def exists(self) -> bool:
         """Checks Existance of the Folder
@@ -561,12 +558,10 @@ class Folder:
         return os.path.isfile(self.directory+"/"+name) 
     
     def copy(self, newDirectory:str) -> str:
-        from os import path
-        
-        f = Folder(newDirectory)
-        
+        Folder(newDirectory)
+
         for x in self.content:
-            if path.isfile(x):
+            if os.path.isfile(x):
                 file = File(x)
                 file.copy(f"{newDirectory}/{file.name}.{file.extension}")
             else:
