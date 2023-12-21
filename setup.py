@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "utils"
-    , version = "0.0.8"
+    , version = "0.0.9"
     , author = "Nathan Yockey"
     , author_email = 'n8teyock@gmail'
     , url = ''
@@ -15,6 +15,8 @@ setup(
                   ,'templates/CSS/Basics/*'
                   ,'templates/JS/*'
                   ,'templates/PHP/*'
+                  ,'templates/MD/*'
+                  ,'templates/Templates/*'
         ]
     }
     , long_description = open("README.md").read()

@@ -18,5 +18,6 @@ utils/templates/HTML/index.html
 utils/templates/HTML/other.html
 utils/templates/JS/jquery-3.7.1.js
 utils/templates/JS/main.js
+utils/templates/MD/README.md
 utils/templates/PHP/index.php
 utils/templates/PHP/init.php

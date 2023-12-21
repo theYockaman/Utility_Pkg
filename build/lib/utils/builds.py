@@ -27,24 +27,31 @@ def createWebsite(php:bool = False) -> None:
     # Base File Type, CSS, JS Folders
     bFolder = Folder(bType.upper())
     jsFolder = Folder('JS')
-    Folder('Content')
     
-    # Add Files to Folders
+    contentFolder = Folder('Content')
+    Folder(f"{contentFolder.directory}/Icons")
+    if php: Folder('Events')
+    Folder('Templates')
     
+    # Add Files to Folders and Add Folders
+    
+    # Main JS File
     File(f"{CURRENT_DIR}/templates/JS/main.js",'js',False).copy(f"{jsFolder.directory}/main.js")
     
     # JQuery File
     File(f'{CURRENT_DIR}/templates/JS/jquery-3.7.1.js','js',False).copy(f'{jsFolder.directory}/jquery.js')
     
-    # Reset CSS File
+    # CSS Folder
     Folder(f'{CURRENT_DIR}/templates/CSS').copy(f'CSS')
     
     # Add HTML/PHP File
     File(f'{CURRENT_DIR}/templates/HTML/other.html','html').copy(f"{bType.upper()}/other.{bType}")
     
     # PHP Files
-    if bType == 'php': 
-        File(f'{CURRENT_DIR}/templates/PHP/init.php','php',False).copy(f"{bFolder.directory}/init.php")
+    if bType == 'php': File(f'{CURRENT_DIR}/templates/PHP/init.php','php',False).copy(f"{bFolder.directory}/init.php")
+    
+    # Add README.md
+    File(f'{CURRENT_DIR}/templates/MD/README.md','md').copy('README.md')
     
     
     
