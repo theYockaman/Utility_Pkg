@@ -11,9 +11,10 @@ setup(
     , include_package_data=True
     , package_data = {
         'utils': ['templates/HTML/*'
-                  ,'templates/CSS/*.css'
-                  ,'templates/JS/*.js'
-                  ,'templates/PHP/*.php'
+                  ,'templates/CSS/*'
+                  ,'templates/CSS/Basics/*'
+                  ,'templates/JS/*'
+                  ,'templates/PHP/*'
         ]
     }
     , long_description = open("README.md").read()

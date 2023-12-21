@@ -12,6 +12,8 @@ utils.egg-info/SOURCES.txt
 utils.egg-info/dependency_links.txt
 utils.egg-info/top_level.txt
 utils/templates/CSS/reset.css
+utils/templates/CSS/Basics/nav.css
+utils/templates/CSS/Basics/other.css
 utils/templates/HTML/index.html
 utils/templates/HTML/other.html
 utils/templates/JS/jquery-3.7.1.js
