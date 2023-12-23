@@ -23,6 +23,9 @@ def createWebsite(php:bool = False) -> None:
     
 
     # Index Page Creation
+    indexPage = File(f"{CURRENT_DIR}/templates/{bType.upper()}/index.{bType}",bType).copy(f"index.{bType}")
+    
+    
     
     # Base File Type, CSS, JS Folders
     bFolder = Folder(bType.upper())
