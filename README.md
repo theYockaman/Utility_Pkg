@@ -1,20 +1,5 @@
 # Utility_Pkg
-
-## Database
-
-### Column
-
-### Database
-
-### DatabaseExistsError
-
-### DatabaseNotFoundError
-
-### Table
-
-### TableExistsError
-
-### TableNotFoundError
+Basic idea a simple utilities package to help everyday python programming and make it easier.
 
 ## File
 
