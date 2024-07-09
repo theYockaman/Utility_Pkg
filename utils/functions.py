@@ -10,7 +10,6 @@ import traceback, sys, time
 __all__ = [
     "printSyntax"
     , "printTraceback"
-    , "checkType"
     , "Duration"
 ]
     

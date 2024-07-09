@@ -6,9 +6,7 @@ File Objects: Easy to manipulate Files: TXT, JSON, CSV, and Folder.
 
 # Imported Modules
 import os, json, pandas, abc
-from .functions import checkType
 from joblib import dump, load
-from typing import Union
 import pathlib
 import shutil
 
@@ -42,9 +40,6 @@ class File:
         
         # Create a File if None
         if directory is None: directory = f"{LOCAL_DIRECTORY}/new.{extIntent}"
-        
-        # Check Directory Type
-        checkType([directory],[str])
         
         # Create Local Directory
         if "/" not in directory: directory = f"{LOCAL_DIRECTORY}/{directory}"
@@ -138,9 +133,6 @@ class File:
         # Setup Directory to the Object's Directory
         if not self.exists(): raise FileExistsError("File Does Not Exists")
         
-        # Check Directory Type
-        checkType([data],[str])
-        
         # Writes to the file or input value into file
         with open(self.directory,"w") as file:
             file.write(data)
@@ -155,9 +147,6 @@ class File:
         
         # Setup Directory to the Object's Directory
         if not self.exists(): raise FileExistsError("File Does Not Exists")
-        
-        # Check Directory Type
-        checkType([name],[str])
         
         directoryList = self.directory.split("/")
         
@@ -182,9 +171,6 @@ class File:
         
         # Setup Directory to the Object's Directory
         if not self.exists(): raise FileExistsError("File Does Not Exists")
-        
-        # Check Directory Type
-        checkType([newDirectory],[str])
         
         # Rename the Directory
         os.rename(self._directory, newDirectory)
@@ -319,9 +305,6 @@ class JSON(File):
         # Setup Directory to the Object's Directory
         if not self.exists(): raise FileExistsError("File Does Not Exists")
         
-        # Check Parameter Types
-        checkType([data],[dict])
-        
         # Write to JSON File
         with open(self.directory, "w") as file:
             json.dump(data, file, indent = 6)
@@ -370,9 +353,6 @@ class CSV(File):
         # Setup Directory to the Object's Directory
         if not self.exists(): raise FileExistsError("File Does Not Exists")
         
-        # Check Parameter Types
-        checkType([df],[pandas.DataFrame])
-        
         # Write to CSV
         df.to_csv(self.directory, index=True)
 
@@ -411,9 +391,6 @@ class BIN(File):
         # Setup Directory to the Object's Directory
         if not self.exists(): raise FileExistsError("File Does Not Exists")
         
-        # Check Parameter Types
-        checkType([obj],[object])
-        
         # Write to BIN
         dump(obj, self.directory, True)
 
@@ -431,9 +408,6 @@ class Folder:
         
         # Create Local Directory
         if "/" not in directory: directory = f"{LOCAL_DIRECTORY}/{directory}"
-        
-        # Check Directory Type
-        checkType([directory],[str])
         
         # Set Directory Variable
         self._directory = directory
@@ -511,9 +485,6 @@ class Folder:
         # Setup Directory to the Object's Directory
         if self.exists(): raise ValueError("Directory Does Not Exists")
         
-        # Check Name Type
-        checkType([name],[str])
-        
         # Directory List
         directoryList = self._directory.split("/")[:-1]
         
@@ -535,8 +506,6 @@ class Folder:
         # Setup Directory to the Object's Directory
         if not self.exists(): raise ValueError("Directory Does Not Exists")
         
-        # Check Directory Type
-        checkType([newDirectory],[str])
         
         os.rename(self._directory, newDirectory)
         self._directory = newDirectory
@@ -549,8 +518,6 @@ class Folder:
         :return: `True` file is in folder, `False` file is not in folder
         :rtype: bool
         """
-        # Check Name Parameter
-        checkType([name],[str])
         
         # Setup Directory to the Object's Directory
         if not self.exists(): raise ValueError("Directory Does Not Exists")
