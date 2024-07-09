@@ -1,8 +1,13 @@
 README.md
 setup.py
+tests/test_csv.py
+tests/test_file.py
+tests/test_folder.py
+tests/test_functions.py
+tests/test_json.py
+tests/test_table.py
 utils/__init__.py
 utils/builds.py
-utils/database.py
 utils/file.py
 utils/functions.py
 utils/math.py

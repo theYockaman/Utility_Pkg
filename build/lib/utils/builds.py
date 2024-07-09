@@ -23,12 +23,10 @@ def createWebsite(php:bool = False) -> None:
     
 
     # Index Page Creation
-    indexPage = File(f"{CURRENT_DIR}/templates/{bType.upper()}/index.{bType}",bType).copy(f"index.{bType}")
+    File(f"{CURRENT_DIR}/templates/{bType.upper()}/index.{bType}",bType).copy(f"index.{bType}")
     
-    
-    
+
     # Base File Type, CSS, JS Folders
-    bFolder = Folder(bType.upper())
     jsFolder = Folder('JS')
     
     contentFolder = Folder('Content')
@@ -48,10 +46,10 @@ def createWebsite(php:bool = False) -> None:
     Folder(f'{CURRENT_DIR}/templates/CSS').copy(f'CSS')
     
     # Add HTML/PHP File
-    File(f'{CURRENT_DIR}/templates/HTML/other.html','html').copy(f"{bType.upper()}/other.{bType}")
+    File(f'{CURRENT_DIR}/templates/HTML/other.html',bType).copy(f"other.{bType}")
     
     # PHP Files
-    if bType == 'php': File(f'{CURRENT_DIR}/templates/PHP/init.php','php',False).copy(f"{bFolder.directory}/init.php")
+    if bType == 'php': File(f'{CURRENT_DIR}/templates/PHP/init.php','php',False).copy(f"Events/init.php")
     
     # Add README.md
     File(f'{CURRENT_DIR}/templates/MD/README.md','md').copy('README.md')

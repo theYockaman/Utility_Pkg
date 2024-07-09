@@ -21,8 +21,6 @@ Basic idea a simple utilities package to help everyday python programming and ma
 
 ### printTraceback
 
-### checkType
-
 ### Duration
 
 ## Math
