@@ -1,5 +1,5 @@
 import unittest
-from utils import file
+from utils import  folder
 import os
 import shutil
 
@@ -7,7 +7,7 @@ class TestFolder(unittest.TestCase):
     
     def test_init(self):
         # Create Test Folder & Creates the Folder
-        f = file.Folder()
+        f = folder.Folder()
         
         # Check to see if the folder exists
         exist = os.path.isdir(f.directory)
@@ -23,7 +23,7 @@ class TestFolder(unittest.TestCase):
         
         
         # Create Test File & Creates the File
-        f = file.Folder("test")
+        f = folder.Folder("test")
         
         # Check to see if the folder exists
         exist = os.path.isdir(f.directory)
@@ -36,7 +36,7 @@ class TestFolder(unittest.TestCase):
         
     def test_exist(self):
         # Create Test Folder & Creates the Folder
-        f = file.Folder()
+        f = folder.Folder()
         
         # Check to see if the folder exists
         ex = os.path.isdir(f.directory)
@@ -51,7 +51,7 @@ class TestFolder(unittest.TestCase):
          
     def test_delete(self):
         # Create Test Folder & Creates the Folder
-        f = file.Folder("test")
+        f = folder.Folder("test")
         
         # Delete File
         f.delete()
@@ -64,7 +64,7 @@ class TestFolder(unittest.TestCase):
         
     def test_rename(self):
         # Create Test Folder & Creates the Folder
-        f = file.Folder("new")
+        f = folder.Folder("new")
         
         # Rename Folder
         f.rename("testFolder")
@@ -80,7 +80,7 @@ class TestFolder(unittest.TestCase):
         
     def test_move(self):
         # Create Test Folder & Creates the Folder
-        f = file.Folder("new")
+        f = folder.Folder("new")
         
         # Rename Folder
         f.move("testFolder")
@@ -96,7 +96,7 @@ class TestFolder(unittest.TestCase):
  
     def test_fileExist(self):
         # Create Test Folder & Creates the Folder
-        f = file.Folder("new")
+        f = folder.Folder("new")
         
         # Rename Folder
         exist = f.fileExist("test.txt")

@@ -24,7 +24,6 @@ class TestCSV(TestCase):
         
         # Try a Parameter File
         
-        
         # Create Test File & Creates the File
         f = file.CSV("new.csv")
         

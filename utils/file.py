@@ -1,4 +1,3 @@
-
 # Module Documentation
 """
 File Objects: Easy to manipulate Files: TXT, JSON, CSV, and Folder.
@@ -17,13 +16,12 @@ __all__ = [
     , "CSV"
     , "BIN"
     , "Folder"
-    , "LOCAL_DIRECTORY"
 ]
 
-# Local Directory from Main Functions
+# Local Directory Current Path
 LOCAL_DIRECTORY = pathlib.Path().resolve()
 
-# Inital File Object to Base around Specific Files
+# Initial File Object to Base around Specific Files
 class File:
     def __init__(self, directory:str = None, extIntent:str = "txt", creation:bool = True) -> None:
         """File Object
@@ -44,7 +42,7 @@ class File:
         # Create Local Directory
         if "/" not in directory: directory = f"{LOCAL_DIRECTORY}/{directory}"
         
-        # Intialize directory variable 
+        # Initialize directory variable 
         self._directory = directory
         
         # Create the File
@@ -393,7 +391,6 @@ class BIN(File):
         
         # Write to BIN
         dump(obj, self.directory, True)
-
  
 # Folder Object
 class Folder:
@@ -434,7 +431,7 @@ class Folder:
         return [f"{self.directory}/{f}" for f in os.listdir(self.directory)]
     
     def exists(self) -> bool:
-        """Checks Existance of the Folder
+        """Checks existence of the Folder
 
         :raises ValueError: No Directory
         :return: `True` Folder Exists, `False` Folder Does Not Exist

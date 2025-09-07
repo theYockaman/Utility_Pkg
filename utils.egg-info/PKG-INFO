@@ -1,11 +1,16 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.4
 Name: utils
 Version: 0.1.0
 Summary: Utils Package is universal across building of other Python Projects
 Home-page: 
 Author: Nathan Yockey
-Author-email: n8teyock@gmail
+Author-email: n8teyock@gmail.com
+License: MIT
+Requires-Python: >=3.8
 Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.31.0
+Requires-Dist: joblib==1.5.2
+Requires-Dist: numpy
 
 # Utility_Pkg
 Basic idea a simple utilities package to help everyday python programming and make it easier.

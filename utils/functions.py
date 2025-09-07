@@ -37,87 +37,6 @@ def printTraceback() -> None:
     print(traceback.format_exc())
     sys.exit()
 
-# Checks Variable DataType
-# def checkType(variables:list, values:list, throwError:bool = True) -> bool:
-#     """Checks the Data Types of Variables
-
-#     :param variables: List of Variables ex. [variableOne, variableTwo]
-#     :type variables: list
-#     :param values: List of the Values of each Variable ex. [typeVariableOne, typeVariableTwo] or [str, int, float]
-#     :type values: list
-#     :param throwError: `True` Throws Errors `False` Does not Throw Errors, defaults to True
-#     :type throwError: bool, optional
-#     :raises ValueError: variables not `list` type
-#     :raises ValueError: values not `list` type
-#     :raises ValueError: throwError not `bool` type
-#     :return: `True` if Variable and Types Match `False` if Variables do not Match
-#     :rtype: bool
-#     """
-#     # Setup New isinstance() Function
-#     tc1 = typesentry.Config()
-#     is_typed = tc1.is_type
-    
-#     # Make sure Parameter is a Dictionary
-#     if not isinstance(variables, list): raise ValueError("variables not `list` type")
-    
-#     # Make sure Parameter is a Dictionary
-#     if not isinstance(values, list): raise ValueError("values not `list` type")
-    
-#     # Make sure Parameter is a Dictionary
-#     if not isinstance(throwError, bool): raise ValueError("throwError not `bool` type")
-    
-    
-    
-#     # Iterate through each in Variables
-#     for variable, value in zip(variables, values):
-        
-#         # Null Variable Value
-#         if variable is None and value is None: continue
-        
-#         try:
-#             isinstance(value,(list,set,tuple))
-#         except TypeError:
-            
-#             if not is_typed(variable, value):
-#                 # Throw Errors
-#                 if throwError: raise TypeError(f"{variable} not `{str(value)}` type")
-                
-#                 return False
-            
-#         if isinstance(value,(list,set,tuple)):
-                
-#                 if variable is None and None not in value: return False
-
-#                 if variable is None and None in value: continue
-                
-#                 if None in value: value.remove(None)
-                
-                
-                
-#                 if any(is_typed(variable,v) for v in value):
-#                     continue
-                
-#                 else:
-#                     for v in value:
-#                         if not is_typed(variable,v):
-#                             # Throw Errors
-#                             if throwError: raise TypeError(f"{variable} not `{str(value)}` type")
-                            
-#                             return False
-                
-#         else:
-#             if not is_typed(variable, value):
-#                 # Throw Errors
-#                 if throwError: raise TypeError(f"{variable} not `{str(value)}` type")
-                
-#                 return False
-        
-        
-        
-        
-                
-#     return True
-
 # Check Duration of Code
 class Duration: 
     def __init__(self) -> None:
@@ -134,7 +53,7 @@ class Duration:
         self._t0 = time.time()
         self._t1 = None
 
-    def end(self) -> None:
+    def end(self) -> dict:
         """
         Sets the End Time and Prints the Time from .start() to .end()
         """
@@ -147,5 +66,5 @@ class Duration:
         milliseconds = round((time_lapse - seconds) * (1000),2)
         
         print("{} minutes, {} seconds, {} milliseconds".format(minutes,seconds,milliseconds))
-
-
+        
+        return {"minutes":minutes, "seconds":seconds, "milliseconds":milliseconds}
